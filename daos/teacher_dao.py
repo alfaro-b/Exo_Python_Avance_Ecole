@@ -189,5 +189,51 @@ class TeacherDao(Dao[Teacher]):
         :param teacher: enseignant dont l'entité Teacher correspondante est à supprimer
         :return: True si la suppression a pu être réalisée
         """
-        ...
+        if teacher.id is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            # Récupération de l'id_person lié à l'enseignant
+            sql = """
+                SELECT id_person
+                FROM teacher
+                WHERE id_teacher = %s
+            """
+            cursor.execute(sql, (teacher.id,))
+            record = cursor.fetchone()
+
+            if record is None:
+                return False
+
+            id_person = record['id_person']
+
+            # Retrait de l'enseignant des cours qu'il enseigne
+            sql = """
+                UPDATE course
+                SET id_teacher = NULL
+                WHERE id_teacher = %s
+            """
+            cursor.execute(sql, (teacher.id,))
+
+            # Suppression de l'enseignant
+            sql = """
+                DELETE FROM teacher
+                WHERE id_teacher = %s
+            """
+            cursor.execute(sql, (teacher.id,))
+
+            # Suppression de la personne correspondante
+            sql = """
+                DELETE FROM person
+                WHERE id_person = %s
+            """
+            cursor.execute(sql, (id_person,))
+
+        Dao.connection.commit()
+
+        # Suppression de son adresse
+        if teacher.address is not None:
+            address_dao = AddressDao()
+            address_dao.delete(teacher.address)
+
         return True

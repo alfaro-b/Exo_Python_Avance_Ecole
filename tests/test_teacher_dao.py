@@ -81,3 +81,21 @@ if teacher is not None:
 # -------------------------
 # TEST DELETE
 # -------------------------
+
+teacher = teacher_dao.read(7)
+
+if teacher is not None:
+    id_teacher = teacher.id
+
+    print("\nAVANT DELETE")
+    print(teacher)
+
+    result = teacher_dao.delete(teacher)
+
+    print("\nDELETE")
+    print("Résultat :", result)
+
+    # Vérification en BDD
+    teacher_deleted = teacher_dao.read(id_teacher)
+
+    print("Après suppression :", teacher_deleted)
