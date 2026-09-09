@@ -32,13 +32,26 @@ class AddressDao(Dao[Address]):
         return addresses
 
     def create(self, address: Address) -> int:
-        """Crée en BD l'entité Address
+        """Crée en BD l'entité Address correspondant à address
 
-        :param address: à créer sous forme d'entité address en BD
-        :return: l'id de l'entité insérée en BD (0 si la création a échoué)
+        :param address: adresse à créer en BD sous forme d'entité address
+        :return: l'id de l'entité insérée en BD
         """
-        ...
-        return 0
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                INSERT INTO address (street, city, postal_code)
+                VALUES (%s, %s, %s)
+            """
+
+            cursor.execute(sql, (address.street, address.city, address.postal_code))
+
+            id_address = cursor.lastrowid
+
+        Dao.connection.commit()
+
+        address.id = id_address
+
+        return id_address
 
     def read(self, id_address: int) -> Optional[Address]:
         """Renvoit l'adresse correspondant à l'entité dont l'id est id_address
