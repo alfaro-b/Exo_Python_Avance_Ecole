@@ -26,8 +26,8 @@ class Dao[T](ABC):
 
     @abstractmethod
     def read_all(self) -> list[T]:
-        """Récupère tous les objets correspondants à l'entité
-           (ou None s'il n'a pu être trouvé)"""
+        """Récupère tous les objets correspondant à l'entité
+        et retourne une liste vide si aucun objet n'est trouvé."""
         ...
 
     @abstractmethod

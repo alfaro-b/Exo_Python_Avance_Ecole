@@ -122,7 +122,7 @@ class TeacherDao(Dao[Teacher]):
             JOIN person ON person.id_person = teacher.id_person
             LEFT JOIN address ON address.id_address = person.id_address 
             WHERE teacher.id_teacher=%s""")
-            # LEFT JOIN récupère quand même l'enseignant mêm si l'adresse est vide
+            # LEFT JOIN récupère quand même l'enseignant même si l'adresse est vide
             cursor.execute(sql, (id_teacher,))
             record = cursor.fetchone()
         if record is not None:

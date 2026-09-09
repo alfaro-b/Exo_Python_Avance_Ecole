@@ -56,7 +56,7 @@ class StudentDao(Dao[Student]):
         return students
 
     def create(self, student: Student) -> int:
-        """Crée en BD l'entité Student correspondant au cours student
+        """Crée en BD l'entité Student correspondant à student
         :param student: à créer sous forme d'entité student en BD
         :return: l'id de l'entité insérée en BD
         """
@@ -99,7 +99,7 @@ class StudentDao(Dao[Student]):
         return student_nbr
 
     def read(self, student_nbr: int) -> Optional[Student]:
-        """Renvoit le student correspondant à l'entité dont l'id est student_nbr
+        """Renvoie le student correspondant à l'entité dont l'id est student_nbr
            (ou None s'il n'a pu être trouvé)"""
         student: Optional[Student]
 
