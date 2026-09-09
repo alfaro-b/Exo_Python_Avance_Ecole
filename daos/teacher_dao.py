@@ -102,7 +102,7 @@ class TeacherDao(Dao[Teacher]):
         return id_teacher
 
     def read(self, id_teacher: int) -> Optional[Teacher]:
-        """Renvoit le student correspondant à l'entité dont l'id est id_person
+        """Renvoit l'enseignant correspondant à l'entité dont l'id est id_teacher
            (ou None s'il n'a pu être trouvé)"""
         teacher: Optional[Teacher]
 

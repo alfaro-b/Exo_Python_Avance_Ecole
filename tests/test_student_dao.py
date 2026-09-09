@@ -50,8 +50,7 @@ print(student_with_address)
 # TEST READ
 # -------------------------
 
-# read() attend actuellement un id_person
-# Remplacer 1 par un id_person existant dans la BDD
+# Lecture d'un étudiant à partir de son student_nbr
 student_read = student_dao.read(1)
 
 print("\nREAD")
@@ -73,6 +72,24 @@ for student in students:
 # TEST UPDATE
 # -------------------------
 
+student = student_dao.read(5)
+
+if student is not None:
+    print("\nAVANT UPDATE")
+    print(student)
+
+    student.first_name = "Paul Update"
+    student.age = 16
+
+    result = student_dao.update(student)
+
+    print("\nUPDATE")
+    print("Résultat :", result)
+
+    student_updated = student_dao.read(5)
+
+    print("\nAPRÈS UPDATE")
+    print(student_updated)
 
 # -------------------------
 # TEST DELETE

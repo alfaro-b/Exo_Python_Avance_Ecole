@@ -98,8 +98,8 @@ class StudentDao(Dao[Student]):
 
         return student_nbr
 
-    def read(self, id_person: int) -> Optional[Student]:
-        """Renvoit le student correspondant à l'entité dont l'id est id_person
+    def read(self, student_nbr: int) -> Optional[Student]:
+        """Renvoit le student correspondant à l'entité dont l'id est student_nbr
            (ou None s'il n'a pu être trouvé)"""
         student: Optional[Student]
 
@@ -117,9 +117,9 @@ class StudentDao(Dao[Student]):
                     address.postal_code   
                 FROM student 
                 JOIN person ON student.id_person = person.id_person
-                JOIN address ON address.id_address = person.id_address 
-                WHERE student.id_person=%s""")
-            cursor.execute(sql, (id_person,))
+                LEFT JOIN address ON address.id_address = person.id_address 
+                WHERE student.student_nbr=%s""")
+            cursor.execute(sql, (student_nbr,))
             record = cursor.fetchone()
         if record is not None:
             student = Student(
@@ -142,7 +142,23 @@ class StudentDao(Dao[Student]):
         :param student: élève déjà mis à jour en mémoire
         :return: True si la mise à jour a pu être réalisée
         """
-        ...
+        if student.student_nbr is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                UPDATE person
+                JOIN student ON student.id_person = person.id_person
+                SET person.first_name = %s,
+                    person.last_name = %s,
+                    person.age = %s
+                WHERE student.student_nbr = %s
+            """
+
+            cursor.execute(sql, (student.first_name, student.last_name, student.age, student.student_nbr))
+
+        Dao.connection.commit()
+
         return True
 
     def delete(self, student: Student) -> bool:
