@@ -4,14 +4,17 @@
 """
 Application de gestion d'une école
 """
+from datetime import date
 
 from business.school import School
 from daos import address_dao
 from daos.address_dao import AddressDao
 from daos.student_dao import StudentDao
+from daos.teacher_dao import TeacherDao
 from models import address
 from models.address import Address
 from models.student import Student
+from models.teacher import Teacher
 
 
 def main() -> None:
@@ -48,6 +51,14 @@ Bienvenue dans notre école
     # id_address = address_dao.create(address)
     # print("ID créé : ", id_address)
     # print(address)
+
+    # test création d'un enseignant
+    # teacher = Teacher("Jean", "Martin", 35, date(2026, 9, 1))
+    # teacher.address = Address("10 rue du Test", "Bayonne", "64100")
+    # teacher_dao = TeacherDao()
+    # id_teacher = teacher_dao.create(teacher)
+    # print("ID enseignant :", id_teacher)
+    # print(teacher)
 
 
 if __name__ == '__main__':

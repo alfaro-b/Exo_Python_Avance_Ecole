@@ -3,6 +3,7 @@
 """
 Classe Dao[Teacher]
 """
+from daos.address_dao import AddressDao
 from models.address import Address
 from models.teacher import Teacher
 from daos.dao import Dao
@@ -65,8 +66,40 @@ class TeacherDao(Dao[Teacher]):
         :param teacher: à créer sous forme d'entité teacher en BD
         :return: l'id de l'entité insérée en BD (0 si la création a échoué)
         """
-        ...
-        return 0
+        # Création de l'adresse si l'enseignant en possède une
+        if teacher.address is not None:
+            address_dao = AddressDao()
+            id_address = address_dao.create(teacher.address)
+        else:
+            id_address = None
+
+        with Dao.connection.cursor() as cursor:
+
+            # Création de la personne
+            sql = """
+                INSERT INTO person (first_name, last_name, age, id_address)
+                VALUES (%s, %s, %s, %s)
+            """
+
+            cursor.execute(sql, (teacher.first_name, teacher.last_name, teacher.age, id_address))
+
+            id_person = cursor.lastrowid
+
+            # Création de l'enseignant
+            sql = """
+                INSERT INTO teacher (hiring_date, id_person)
+                VALUES (%s, %s)
+            """
+
+            cursor.execute(sql, (teacher.hiring_date, id_person))
+
+            id_teacher = cursor.lastrowid
+
+        Dao.connection.commit()
+
+        teacher.id = id_teacher
+
+        return id_teacher
 
     def read(self, id_teacher: int) -> Optional[Teacher]:
         """Renvoit le student correspondant à l'entité dont l'id est id_person
