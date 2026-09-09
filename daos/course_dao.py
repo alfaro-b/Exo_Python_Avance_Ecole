@@ -9,6 +9,8 @@ from daos.dao import Dao
 from dataclasses import dataclass
 from typing import Optional
 
+from models.teacher import Teacher
+
 
 @dataclass
 class CourseDao(Dao[Course]):
@@ -57,7 +59,7 @@ class CourseDao(Dao[Course]):
         """Renvoit le cours correspondant à l'entité dont l'id est id_course
            (ou None s'il n'a pu être trouvé)"""
         course: Optional[Course]
-        
+
         with Dao.connection.cursor() as cursor:
             sql = "SELECT * FROM course WHERE id_course=%s"
             cursor.execute(sql, (id_course,))
@@ -103,3 +105,24 @@ class CourseDao(Dao[Course]):
             return record['id_teacher']
 
         return None
+
+    def assign_teacher(self, course: Course, teacher: Teacher) -> bool:
+        """Affecte un enseignant à un cours existant."""
+
+        if course.id is None or teacher.id is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                UPDATE course
+                SET id_teacher = %s
+                WHERE id_course = %s
+            """
+
+            cursor.execute(sql, (teacher.id, course.id))
+
+        Dao.connection.commit()
+
+        course.set_teacher(teacher)
+
+        return True

@@ -67,6 +67,15 @@ Bienvenue dans notre école
     # course_dao = CourseDao()
     # course_dao.create(course)
 
+    # Test affection d'un cours à un enseignant
+    # course = school.get_course_by_id(9)
+    # teacher = school.get_teacher_by_id(7)
+    # print("Avant affectation :", course)
+    # if course is not None and teacher is not None:
+    #     result = CourseDao().assign_teacher(course, teacher)
+    #     print("Affectation réussie :", result)
+    #    print("Après affectation :", course)
+
 
 if __name__ == '__main__':
     main()
