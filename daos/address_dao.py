@@ -104,5 +104,24 @@ class AddressDao(Dao[Address]):
         :param address: adresse dont l'entité Address correspondante est à supprimer
         :return: True si la suppression a pu être réalisée
         """
-        ...
+        if address.id is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            # Retire l'adresse des personnes qui l'utilisent
+            sql = """
+                UPDATE person
+                SET id_address = NULL
+                WHERE id_address = %s
+            """
+            cursor.execute(sql, (address.id,))
+
+            # Supprime ensuite l'adresse
+            sql = """
+                DELETE FROM address
+                WHERE id_address = %s
+            """
+            cursor.execute(sql, (address.id,))
+        Dao.connection.commit()
+
         return True

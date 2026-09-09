@@ -83,6 +83,13 @@ Bienvenue dans notre école
     #     address.street = "12 rue des Fleurs"
     #     address_dao.update(address)
 
+    # Test suppression d'une adresse
+    # address_dao = AddressDao()
+    # address = address_dao.read(6)
+    # if address is not None:
+    #     result = address_dao.delete(address)
+    #     print("Suppression réussie :", result)
+
 
 if __name__ == '__main__':
     main()
