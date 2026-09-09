@@ -7,7 +7,6 @@ Application de gestion d'une école
 from datetime import date
 
 from business.school import School
-from daos import address_dao
 from daos.address_dao import AddressDao
 from daos.course_dao import CourseDao
 from daos.student_dao import StudentDao
@@ -75,6 +74,14 @@ Bienvenue dans notre école
     #     result = CourseDao().assign_teacher(course, teacher)
     #     print("Affectation réussie :", result)
     #    print("Après affectation :", course)
+
+    # Test modif d'une adresse
+    # address_dao = AddressDao()
+    # address = address_dao.read(5)
+    # if address is not None:
+    #     address.city = "Anglet"
+    #     address.street = "12 rue des Fleurs"
+    #     address_dao.update(address)
 
 
 if __name__ == '__main__':

@@ -66,7 +66,6 @@ class AddressDao(Dao[Address]):
             record = cursor.fetchone()
         if record is not None:
             address = Address(
-                record['id_address'],
                 record['street'],
                 record['city'],
                 record['postal_code'])
@@ -78,11 +77,25 @@ class AddressDao(Dao[Address]):
 
     def update(self, address: Address) -> bool:
         """Met à jour en BD l'entité Address correspondant à address, pour y correspondre
-
         :param address: adresse déjà mis à jour en mémoire
         :return: True si la mise à jour a pu être réalisée
         """
-        ...
+        if address.id is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                UPDATE address
+                SET street = %s,
+                    city = %s,
+                    postal_code = %s
+                WHERE id_address = %s
+            """
+
+            cursor.execute(sql, (address.street, address.city, address.postal_code, address.id))
+
+        Dao.connection.commit()
+
         return True
 
     def delete(self, address: Address) -> bool:
