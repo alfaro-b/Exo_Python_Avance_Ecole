@@ -3,6 +3,7 @@
 """
 Classe Dao[Student]
 """
+from daos.address_dao import AddressDao
 from models.address import Address
 from models.student import Student
 from daos.dao import Dao
@@ -56,31 +57,30 @@ class StudentDao(Dao[Student]):
 
     def create(self, student: Student) -> int:
         """Crée en BD l'entité Student correspondant au cours student
-
         :param student: à créer sous forme d'entité student en BD
-        :return: l'id de l'entité insérée en BD 
+        :return: l'id de l'entité insérée en BD
         """
+        # 1. Création de l'adresse si l'élève en possède une
+        if student.address is not None:
+            address_dao = AddressDao()
+            id_address = address_dao.create(student.address)
+        else:
+            id_address = None
+
         with Dao.connection.cursor() as cursor:
-            # création de la personne
+
+            # 2. Création de la personne
             sql = """
                 INSERT INTO person (first_name, last_name, age, id_address)
                 VALUES (%s, %s, %s, %s)
             """
 
-            id_address = (
-                student.address.id
-                if student.address is not None
-                else None
-            )
+            cursor.execute(sql, (student.first_name, student.last_name, student.age, id_address))
 
-            cursor.execute(
-                sql,
-                (student.first_name, student.last_name, student.age, id_address)
-            )
-
+            # Récupération de l'id_person généré par MySQL
             id_person = cursor.lastrowid
 
-            # création de l'étudiant
+            # 3. Création de l'étudiant
             sql = """
                 INSERT INTO student (id_person)
                 VALUES (%s)
@@ -88,11 +88,15 @@ class StudentDao(Dao[Student]):
 
             cursor.execute(sql, (id_person,))
 
-            student.student_nbr = cursor.lastrowid
+            # student_nbr est AUTO_INCREMENT
+            student_nbr = cursor.lastrowid
 
         Dao.connection.commit()
 
-        return student.student_nbr
+        # Mise à jour de l'objet Python
+        student.student_nbr = student_nbr
+
+        return student_nbr
 
     def read(self, id_person: int) -> Optional[Student]:
         """Renvoit le student correspondant à l'entité dont l'id est id_person

@@ -29,12 +29,18 @@ Bienvenue dans notre école
     # affichage de la liste des cours, leur enseignant et leurs élèves
     school.display_courses_list()
 
-    # test création élève
+    # test création élève sans adresse
     # student = Student("Test", "Eleve", 15)
     # student_dao = StudentDao()
     # student_nbr = student_dao.create(student)
     # print("Numéro créé :", student_nbr)
     # print(student)
+
+    # test création élève avec adresse
+    # student = Student("Paul", "Dupont", 14)
+    # student.address = Address("5 rue des Fleurs", "Bayonne", "64100")
+    # student_dao = StudentDao()
+    # student_dao.create(student)
 
     # test création adresse
     # address = Address("10 rue Test", "Bayonne", "64100")
