@@ -163,11 +163,55 @@ class StudentDao(Dao[Student]):
 
     def delete(self, student: Student) -> bool:
         """Supprime en BD l'entité Student correspondant à student
-
         :param student: élève dont l'entité Student correspondante est à supprimer
         :return: True si la suppression a pu être réalisée
         """
-        ...
+        if student.student_nbr is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            # Récupération de l'id_person lié à l'étudiant
+            sql = """
+                SELECT id_person
+                FROM student
+                WHERE student_nbr = %s
+            """
+            cursor.execute(sql, (student.student_nbr,))
+            record = cursor.fetchone()
+
+            if record is None:
+                return False
+
+            id_person = record['id_person']
+
+            # Suppression des inscriptions de l'étudiant aux cours
+            sql = """
+                DELETE FROM takes
+                WHERE student_nbr = %s
+            """
+            cursor.execute(sql, (student.student_nbr,))
+
+            # Suppression de l'étudiant
+            sql = """
+                DELETE FROM student
+                WHERE student_nbr = %s
+            """
+            cursor.execute(sql, (student.student_nbr,))
+
+            # Suppression de la personne correspondante
+            sql = """
+                DELETE FROM person
+                WHERE id_person = %s
+            """
+            cursor.execute(sql, (id_person,))
+
+        Dao.connection.commit()
+
+        # Suppression de son adresse si elle existe
+        if student.address is not None:
+            address_dao = AddressDao()
+            address_dao.delete(student.address)
+
         return True
 
     def read_by_course_id(self, id_course: int) -> list[Student]:

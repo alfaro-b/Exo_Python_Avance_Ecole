@@ -94,3 +94,20 @@ if student is not None:
 # -------------------------
 # TEST DELETE
 # -------------------------
+
+student = student_dao.read(5)
+
+if student is not None:
+    student_nbr = student.student_nbr
+
+    print("\nAVANT DELETE")
+    print(student)
+
+    result = student_dao.delete(student)
+
+    print("\nDELETE")
+    print("Résultat :", result)
+
+    student_deleted = student_dao.read(student_nbr)
+
+    print("Après suppression :", student_deleted)
