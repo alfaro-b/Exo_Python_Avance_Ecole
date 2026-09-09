@@ -78,7 +78,22 @@ class CourseDao(Dao[Course]):
         :param course: cours déjà mis à jour en mémoire
         :return: True si la mise à jour a pu être réalisée
         """
-        ...
+        if course.id is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                UPDATE course
+                SET name = %s,
+                    start_date = %s,
+                    end_date = %s
+                WHERE id_course = %s
+            """
+
+            cursor.execute(sql, (course.name, course.start_date, course.end_date, course.id))
+
+        Dao.connection.commit()
+
         return True
 
     def delete(self, course: Course) -> bool:

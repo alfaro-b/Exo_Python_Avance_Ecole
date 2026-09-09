@@ -69,6 +69,18 @@ if course is not None and teacher is not None:
 # TEST UPDATE
 # -------------------------
 
+course = course_dao.read(9)
+
+if course is not None:
+    course.name = "Python avancé"
+    course.end_date = date(2026, 9, 11)
+
+    result = course_dao.update(course)
+
+    print("\nUPDATE")
+    print("Résultat :", result)
+    print(course)
+
 
 # -------------------------
 # TEST DELETE
