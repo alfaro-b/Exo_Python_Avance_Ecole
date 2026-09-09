@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 @dataclass
 class Dao[T](ABC):
     connection: ClassVar[pymysql.Connection] = pymysql.connect(
