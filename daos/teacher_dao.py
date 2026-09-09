@@ -154,7 +154,33 @@ class TeacherDao(Dao[Teacher]):
         :param teacher: enseignant déjà mis à jour en mémoire
         :return: True si la mise à jour a pu être réalisée
         """
-        ...
+        if teacher.id is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            # Mise à jour des informations de la personne
+            sql = """
+                UPDATE person
+                JOIN teacher ON teacher.id_person = person.id_person
+                SET person.first_name = %s,
+                    person.last_name = %s,
+                    person.age = %s
+                WHERE teacher.id_teacher = %s
+            """
+
+            cursor.execute(sql, (teacher.first_name, teacher.last_name, teacher.age, teacher.id))
+
+            # Mise à jour de la date d'embauche
+            sql = """
+                UPDATE teacher
+                SET hiring_date = %s
+                WHERE id_teacher = %s
+            """
+
+            cursor.execute(sql, (teacher.hiring_date, teacher.id))
+
+        Dao.connection.commit()
+
         return True
 
     def delete(self, teacher: Teacher) -> bool:

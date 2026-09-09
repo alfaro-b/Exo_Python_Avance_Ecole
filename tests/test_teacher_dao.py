@@ -58,6 +58,25 @@ for teacher in teachers:
 # TEST UPDATE
 # -------------------------
 
+teacher = teacher_dao.read(7)
+
+if teacher is not None:
+    print("\nAVANT UPDATE")
+    print(teacher)
+
+    teacher.first_name = "Prénom Update"
+    teacher.hiring_date = date(2026, 9, 9)
+
+    result = teacher_dao.update(teacher)
+
+    print("\nUPDATE")
+    print("Résultat :", result)
+
+    # Nouvelle lecture depuis la BDD pour vérifier
+    teacher_updated = teacher_dao.read(7)
+
+    print("\nAPRÈS UPDATE")
+    print(teacher_updated)
 
 # -------------------------
 # TEST DELETE
