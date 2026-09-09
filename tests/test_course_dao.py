@@ -85,3 +85,16 @@ if course is not None:
 # -------------------------
 # TEST DELETE
 # -------------------------
+
+course = course_dao.read(9)
+
+if course is not None:
+
+    result = course_dao.delete(course)
+
+    print("\nDELETE")
+    print("Résultat :", result)
+
+    # Vérification en BDD
+    course_deleted = course_dao.read(9)
+    print("Cours après suppression :", course_deleted)

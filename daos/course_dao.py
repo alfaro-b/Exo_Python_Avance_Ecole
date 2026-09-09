@@ -102,7 +102,24 @@ class CourseDao(Dao[Course]):
         :param course: cours dont l'entité Course correspondante est à supprimer
         :return: True si la suppression a pu être réalisée
         """
-        ...
+        if course.id is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                DELETE FROM takes
+                WHERE id_course = %s
+            """
+            cursor.execute(sql, (course.id,))
+
+            sql = """
+                DELETE FROM course
+                WHERE id_course = %s
+            """
+            cursor.execute(sql, (course.id,))
+
+        Dao.connection.commit()
+
         return True
 
     def read_teacher_id(self, id_course: int) -> Optional[int]:
