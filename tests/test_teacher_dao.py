@@ -99,3 +99,25 @@ if teacher is not None:
     teacher_deleted = teacher_dao.read(id_teacher)
 
     print("Après suppression :", teacher_deleted)
+
+    # -------------------------
+    # TEST ADD ADDRESS
+    # -------------------------
+
+    teacher = teacher_dao.read(1)
+
+    if teacher is not None:
+        print("\nAVANT AJOUT ADRESSE")
+        print(teacher)
+
+        address = Address("12 rue des Lilas", "Bayonne", "64100")
+
+        result = teacher_dao.add_address(teacher, address)
+
+        print("\nAJOUT ADRESSE")
+        print("Résultat :", result)
+
+        teacher_updated = teacher_dao.read(1)
+
+        print("\nAPRÈS AJOUT ADRESSE")
+        print(teacher_updated)

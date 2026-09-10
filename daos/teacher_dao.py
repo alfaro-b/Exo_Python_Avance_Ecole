@@ -3,6 +3,7 @@
 """
 Classe Dao[Teacher]
 """
+from daos import address_dao
 from daos.address_dao import AddressDao
 from models.address import Address
 from models.teacher import Teacher
@@ -150,7 +151,6 @@ class TeacherDao(Dao[Teacher]):
 
     def update(self, teacher: Teacher) -> bool:
         """Met à jour en BD l'entité Teacher correspondant à teacher, pour y correspondre
-
         :param teacher: enseignant déjà mis à jour en mémoire
         :return: True si la mise à jour a pu être réalisée
         """
@@ -235,5 +235,36 @@ class TeacherDao(Dao[Teacher]):
         if teacher.address is not None:
             address_dao = AddressDao()
             address_dao.delete(teacher.address)
+
+        return True
+
+    def add_address(self, teacher: Teacher, address: Address) -> bool:
+        """Ajoute une adresse à un enseignant qui n'en possède pas."""
+
+        if teacher.id is None:
+            return False
+
+        if teacher.address is not None:
+            return False
+
+        # Création de l'adresse en BDD
+        address_dao = AddressDao()
+        id_address = address_dao.create(address)
+
+        # Association de l'adresse à la personne correspondant à l'enseignant
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                UPDATE person
+                JOIN teacher ON teacher.id_person = person.id_person
+                SET person.id_address = %s
+                WHERE teacher.id_teacher = %s
+            """
+
+            cursor.execute(sql, (id_address, teacher.id))
+
+        Dao.connection.commit()
+
+        # Mise à jour de l'objet Python
+        teacher.address = address
 
         return True
