@@ -5,13 +5,10 @@ Classe School
 """
 
 from dataclasses import dataclass, field
-from datetime import date
 
-from daos import teacher_dao
 from daos.course_dao import CourseDao
 from daos.student_dao import StudentDao
 from daos.teacher_dao import TeacherDao
-from models.address import Address
 from models.course import Course
 from models.teacher import Teacher
 from models.student import Student
@@ -79,6 +76,22 @@ class School:
                 print(f"- {student}")
             print()
 
+    def display_teacher_courses(self, teacher: Teacher) -> None:
+        """Affiche les cours enseignés par un enseignant."""
+        print(f"\nCours enseignés par {teacher.first_name} {teacher.last_name} :")
+        for course in self.courses:
+            if course.teacher is not None and course.teacher.id == teacher.id:
+                print(f"- {course}")
+
+    def display_student_courses(self, student: Student) -> None:
+        """Affiche les cours suivis par un élève"""
+        print(f"\nCours suivis par {student.first_name} {student.last_name} :")
+        for course in self.courses:
+            for course_student in course.students_taking_it:
+                if course_student.student_nbr == student.student_nbr:
+                    print(f"- {course}")
+                    break
+
     @staticmethod
     def get_course_by_id(id_course: int):
         course_dao: CourseDao = CourseDao()
@@ -90,7 +103,7 @@ class School:
         return teacher_dao.read(id_teacher)
 
     @staticmethod
-    def get_student_by_id(id_person: int):
+    def get_student_by_nbr(student_nbr: int):
         student_dao: StudentDao = StudentDao()
-        return student_dao.read(id_person)
+        return student_dao.read(student_nbr)
 

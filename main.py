@@ -20,8 +20,57 @@ Bienvenue dans notre école
     # récupération de tous les cours de la BDD
     school.load_courses()
 
-    # affichage de la liste des cours, leur enseignant et leurs élèves
-    school.display_courses_list()
+    print("""
+    Qui êtes-vous ?
+    1 - Élève
+    2 - Enseignant
+    3 - Directeur
+    0 - Quitter
+    """)
+
+    choice = input("Votre choix : ")
+
+    # -------------------------
+    # ÉLÈVE
+    # -------------------------
+    if choice == "1":
+
+        student_nbr = int(input("Numéro étudiant : "))
+        student = school.get_student_by_nbr(student_nbr)
+
+        if student is None:
+            print("Élève introuvable.")
+        else:
+            school.display_student_courses(student)
+
+    # -------------------------
+    # ENSEIGNANT
+    # -------------------------
+    elif choice == "2":
+
+        id_teacher = int(input("Identifiant enseignant : "))
+        teacher = school.get_teacher_by_id(id_teacher)
+
+        if teacher is None:
+            print("Enseignant introuvable.")
+        else:
+            school.display_teacher_courses(teacher)
+
+    # -------------------------
+    # DIRECTEUR
+    # -------------------------
+    elif choice == "3":
+        print("\nListe de tous les cours :")
+        school.display_courses_list()
+
+    # -------------------------
+    # QUITTER
+    # -------------------------
+    elif choice == "0":
+        print("Au revoir.")
+
+    else:
+        print("Choix invalide.")
 
 
 if __name__ == '__main__':
