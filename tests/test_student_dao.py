@@ -111,3 +111,25 @@ if student is not None:
     student_deleted = student_dao.read(student_nbr)
 
     print("Après suppression :", student_deleted)
+
+    # -------------------------
+    # TEST ADD ADDRESS
+    # -------------------------
+
+    student = student_dao.read(1)
+
+    if student is not None:
+        print("\nAVANT AJOUT ADRESSE")
+        print(student)
+
+        address = Address("13 rue des pinsons", "Castanet", "31320")
+
+        result = student_dao.add_address(student, address)
+
+        print("\nAJOUT ADRESSE")
+        print("Résultat :", result)
+
+        student_updated = student_dao.read(1)
+
+        print("\nAPRÈS AJOUT ADRESSE")
+        print(student_updated)

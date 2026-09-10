@@ -260,3 +260,34 @@ class StudentDao(Dao[Student]):
             students.append(student)
 
         return students
+
+    def add_address(self, student: Student, address: Address) -> bool:
+        """Ajoute une adresse à un élève qui n'en possède pas."""
+
+        if student.student_nbr is None:
+            return False
+
+        if student.address is not None:
+            return False
+
+        # Création de l'adresse en BDD
+        address_dao = AddressDao()
+        id_address = address_dao.create(address)
+
+        # Association de l'adresse à la personne correspondant à l'élève
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                UPDATE person
+                JOIN student ON student.id_person = person.id_person
+                SET person.id_address = %s
+                WHERE student.student_nbr = %s
+            """
+
+            cursor.execute(sql, (id_address, student.student_nbr))
+
+        Dao.connection.commit()
+
+        # Mise à jour de l'objet Python
+        student.address = address
+
+        return True
