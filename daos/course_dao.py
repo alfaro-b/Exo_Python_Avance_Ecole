@@ -56,6 +56,9 @@ class CourseDao(Dao[Course]):
 
         return id_course
 
+    # Dans MySQL, passage d'id_teacher à NULL
+    # comme ça on peut d'abord créer le cours seul et ensuite affecter un enseignant à un cours.
+
     def read(self, id_course: int) -> Optional[Course]:
         """Renvoit le cours correspondant à l'entité dont l'id est id_course
            (ou None s'il n'a pu être trouvé)"""
