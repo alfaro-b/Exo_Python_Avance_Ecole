@@ -9,6 +9,7 @@ from daos.dao import Dao
 from dataclasses import dataclass
 from typing import Optional
 
+from models.student import Student
 from models.teacher import Teacher
 
 
@@ -156,5 +157,24 @@ class CourseDao(Dao[Course]):
         Dao.connection.commit()
 
         course.set_teacher(teacher)
+
+        return True
+
+    def enroll_student(self, course: Course, student: Student) -> bool:
+        """Inscrit un élève à un cours existant"""
+
+        if course.id is None or student.student_nbr is None:
+            return False
+
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                INSERT INTO takes (student_nbr, id_course)
+                VALUES (%s, %s)
+            """
+            cursor.execute(sql, (student.student_nbr, course.id))
+
+        Dao.connection.commit()
+
+        course.add_student(student)
 
         return True

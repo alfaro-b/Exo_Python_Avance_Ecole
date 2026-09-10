@@ -1,6 +1,8 @@
 from datetime import date
 
+from business.school import School
 from daos.course_dao import CourseDao
+from daos.student_dao import StudentDao
 from daos.teacher_dao import TeacherDao
 from models.course import Course
 
@@ -98,3 +100,21 @@ if course is not None:
     # Vérification en BDD
     course_deleted = course_dao.read(9)
     print("Cours après suppression :", course_deleted)
+
+# -------------------------
+# TEST INSCRIRE ELEVE
+# -------------------------
+
+school = School()
+course = course_dao.read(7)
+student_dao = StudentDao()
+student = student_dao.read(3)
+if course is not None and student is not None:
+    result = course_dao.enroll_student(course, student)
+
+    print("\nENROL")
+    print("Résultat :", result)
+
+    # Recharge les cours depuis la BDD pour vérifier l'inscription
+    school.load_courses()
+    school.display_courses_list()
