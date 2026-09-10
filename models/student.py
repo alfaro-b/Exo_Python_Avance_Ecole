@@ -5,7 +5,6 @@ Classe Student, fille de la classe Person
 """
 
 from dataclasses import dataclass, field
-from typing import ClassVar
 from .person import Person
 from .course import Course
 
@@ -13,12 +12,16 @@ from .course import Course
 @dataclass
 class Student(Person):
     """Elève suivant un ou plusieurs cours de l'école :
-    - students_nb   : nombre total d'élèves
     - student_nbr   : n° d'élève
     - courses_taken : liste des cours pris par cet élève
     """
+    # MODIF IMPORTANTE 
+    # Suppression de student_nb(nb élèves), plus besoin de compteur
+    # car numéro élève, student_nbr passé en AUTO INCREMENT dans MySQL
+
     # students_nb: ClassVar[int] = 0  # nb d'étudiants créés
     # student_nbr: int = field(init=False)
+
     student_nbr: int | None = field(default=None, init=False)
     courses_taken: list[Course] = field(default_factory=list, init=False)
 
